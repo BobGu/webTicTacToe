@@ -17,11 +17,19 @@ public class GameSetupController implements Controller{
         String responseHeader = HttpStatus.OKAY.getResponseCode() + EscapeCharacters.newline;
         responseHeader += "Content-Type: text/html" + EscapeCharacters.newline + EscapeCharacters.newline;
         TicTacToeMessageFactory ticTacToeMessageFactory = new TicTacToeMessageFactory();
-        String responseBody = "<!DOCTYPE html>"
-                + "<html><head></head><body><p>"
-                + ticTacToeMessageFactory.gameMode()
-                + "</p></body></html>";
+        String gameMessage = ticTacToeMessageFactory.gameMode();
+        String responseBody = formatIntoHtml(gameMessage);
         String response = responseHeader + responseBody;
         return response.getBytes();
+    }
+
+    private String formatIntoHtml(String message) {
+        return "<!DOCTYPE html>"
+               + "<html><head></head><body><p>"
+               + message
+               + "</p><form><input name=\"gamemode\" type=\"radio\" value=\"hh\">Human vs Human</input>"
+               + "<input name=\"gamemode\"type=\"radio\" value=\"hc\"> Human vs Computer</input>"
+               + "<input type=\"submit\"/></form>"
+               + "</body></html>";
     }
 }
