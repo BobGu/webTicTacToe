@@ -28,6 +28,7 @@ public class htmlDecorator {
                     + playerPath
                     + "method=\"post\"><input name=\"playerName\"/>"
                     + alertMessage
+                    + "<input type=\"submit\"/>"
                     + "</form></html>";
         return html;
     }
