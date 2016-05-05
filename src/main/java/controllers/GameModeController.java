@@ -1,6 +1,7 @@
 package controllers;
 import alertQueue.Alert;
 import decorators.htmlDecorator;
+import gameInformation.GameInformation;
 import httpStatus.HttpStatus;
 import messageFactory.TicTacToeMessageFactory;
 import parsers.ParametersParser;
@@ -39,6 +40,7 @@ public class GameModeController implements Controller{
 
         if (validGameMode) {
             response += "Location: http://localhost:5000/first-player-name" + EscapeCharacters.newline + EscapeCharacters.newline;
+            GameInformation.setGameMode(gameMode);
         } else {
             response += "Location: http://localhost:5000/game-mode" + EscapeCharacters.newline + EscapeCharacters.newline;
             alert.add(gameMode + " is not a valid game mode");
