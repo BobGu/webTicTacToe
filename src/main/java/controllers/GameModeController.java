@@ -2,12 +2,14 @@ package controllers;
 import alertQueue.Alert;
 import httpStatus.HttpStatus;
 import messageFactory.TicTacToeMessageFactory;
+import parsers.ParametersParser;
 import requests.Request;
 import specialCharacters.EscapeCharacters;
 import validators.TicTacToeValidator;
 
 public class GameModeController implements Controller{
     private Alert alert = Alert.getInstance();
+    private ParametersParser parser = new ParametersParser();
 
     public byte[] handle(Request request) {
         if(request.getHttpVerb().equals("GET")) {
@@ -31,26 +33,40 @@ public class GameModeController implements Controller{
     private byte[] post(Request request) {
         String response = HttpStatus.REDIRECT.getResponseCode() + EscapeCharacters.newline;
         TicTacToeValidator validator = new TicTacToeValidator();
-        boolean validGameMode = validator.validGameMode(request.getParameters());
+        String gameMode = parser.parseForValue(request.getParameters(), "gamemode");
+        boolean validGameMode = validator.validGameMode(gameMode);
+
         if (validGameMode) {
-            response += "Location: localhost:5000/first-player-name" + EscapeCharacters.newline + EscapeCharacters.newline;
+            response += "Location: http://localhost:5000/first-player-name" + EscapeCharacters.newline + EscapeCharacters.newline;
         } else {
-            response += "Location: localhost:5000/game-mode" + EscapeCharacters.newline + EscapeCharacters.newline;
-            alert.add("That is not a valid game mode");
+            response += "Location: http://localhost:5000/game-mode" + EscapeCharacters.newline + EscapeCharacters.newline;
+            alert.add(gameMode + " is not a valid game mode");
         }
         return response.getBytes();
     }
 
     private String formatIntoHtml(String message) {
-        return "<!DOCTYPE html>"
-                + "<html><head></head><body><p>"
-                + message
-                + "</p><form action=\"localhost:5000\" ><input name=\"gamemode\" type=\"radio\" value=\"hh\">Human vs Human</input>"
-                + "<input name=\"gamemode\"type=\"radio\" value=\"hc\"> Human vs Computer</input>"
-                + "<input name=\"submit\" type=\"submit\" method=\"post\"/></form>"
-                + "<div class=\"alert\">"
-                + alert.removeAndReturnFirst()
-                + "</div>"
-                + "</body></html>";
+        String alertMessage = showAlert();
+        String html = "<!DOCTYPE html>"
+                    + "<html><head></head><body><p>"
+                    + message
+                    + "</p><form action=\"http://localhost:5000/game-mode\" method=\"post\"><input name=\"gamemode\" type=\"radio\" value=\"hh\">Human vs Human</input>"
+                    + "<input name=\"gamemode\"type=\"radio\" value=\"hc\"> Human vs Computer</input>"
+                    + "<input type=\"submit\"/></form>"
+                    + alertMessage
+                    + "</body></html>";
+        return html;
+    }
+
+    private String showAlert() {
+        String messageAlert = alert.removeAndReturnFirst();
+        String html = "";
+        if (messageAlert != null) {
+            html += "<div class=\"alert\">"
+                    + messageAlert
+                    + "</div>";
+        }
+
+        return html;
     }
 }

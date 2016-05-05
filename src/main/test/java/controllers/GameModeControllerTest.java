@@ -6,7 +6,7 @@ import requests.Request;
 
 import static org.junit.Assert.assertTrue;
 
-public class GameModeController {
+public class GameModeControllerTest {
     private controllers.GameModeController controller = new controllers.GameModeController();
     private Request getRequest = new Request("full request", "/game-mode", "GET", null, null);
 
@@ -37,25 +37,26 @@ public class GameModeController {
 
     @Test
     public void handlesAPostRequest() {
-        Request request = new Request("A request", "/game-mode", "POST", "hh", null);
+        Request request = new Request("A request", "/game-mode", "POST", "gamemode=hh", null);
         byte[] response = controller.handle(request);
         String responseString = new String(response);
 
-        assertTrue(responseString.contains("Location: localhost:5000/first-player-name"));
+        assertTrue(responseString.contains("Location: http://localhost:5000/first-player-name"));
     }
 
     @Test
     public void handlesInvalidGameMode() {
-        Request request = new Request("A request", "/game-mode", "POST", "USERS* DROP TABLE", null);
+        Request request = new Request("A request", "/game-mode", "POST", "gamemode=USERS* DROP TABLE", null);
         byte[] response = controller.handle(request);
         String responseString = new String(response);
 
         byte[] getResponse = controller.handle(getRequest);
         String getResponseString = new String(getResponse);
 
-        assertTrue(responseString.contains("Location: localhost:5000/game-mode"));
-        assertTrue(getResponseString.contains("That is not a valid game mode"));
+        assertTrue(responseString.contains("Location: http://localhost:5000/game-mode"));
+        assertTrue(getResponseString.contains("USERS* DROP TABLE is not a valid game mode"));
     }
+
 
     @After
     public void clearQueue() {
