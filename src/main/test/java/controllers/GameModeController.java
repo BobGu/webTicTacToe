@@ -1,4 +1,6 @@
+import alertQueue.Alert;
 import httpStatus.HttpStatus;
+import org.junit.After;
 import org.junit.Test;
 import requests.Request;
 
@@ -25,8 +27,8 @@ public class GameModeController {
     }
 
     @Test
-    public void getsTwoHundredOkayForAPost() {
-        Request request = new Request("A request", "/game-mode", "POST", null, null);
+    public void getsThreeOhTwoRedirect() {
+        Request request = new Request("A request", "/game-mode", "POST", "hh", null);
         byte[] response = controller.handle(request);
         String responseString = new String(response);
 
@@ -48,7 +50,20 @@ public class GameModeController {
         byte[] response = controller.handle(request);
         String responseString = new String(response);
 
+        byte[] getResponse = controller.handle(getRequest);
+        String getResponseString = new String(getResponse);
+
         assertTrue(responseString.contains("Location: localhost:5000/game-mode"));
+        assertTrue(getResponseString.contains("That is not a valid game mode"));
     }
+
+    @After
+    public void clearQueue() {
+        Alert alert = Alert.getInstance();
+        while (alert.removeAndReturnFirst() != null) {
+            alert.removeAndReturnFirst();
+        }
+    }
+
 
 }

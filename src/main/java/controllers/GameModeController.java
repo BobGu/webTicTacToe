@@ -1,4 +1,5 @@
 package controllers;
+import alertQueue.Alert;
 import httpStatus.HttpStatus;
 import messageFactory.TicTacToeMessageFactory;
 import requests.Request;
@@ -6,6 +7,7 @@ import specialCharacters.EscapeCharacters;
 import validators.TicTacToeValidator;
 
 public class GameModeController implements Controller{
+    private Alert alert = Alert.getInstance();
 
     public byte[] handle(Request request) {
         if(request.getHttpVerb().equals("GET")) {
@@ -34,17 +36,21 @@ public class GameModeController implements Controller{
             response += "Location: localhost:5000/first-player-name" + EscapeCharacters.newline + EscapeCharacters.newline;
         } else {
             response += "Location: localhost:5000/game-mode" + EscapeCharacters.newline + EscapeCharacters.newline;
+            alert.add("That is not a valid game mode");
         }
         return response.getBytes();
     }
 
     private String formatIntoHtml(String message) {
         return "<!DOCTYPE html>"
-               + "<html><head></head><body><p>"
-               + message
-               + "</p><form action=\"localhost:5000\" ><input name=\"gamemode\" type=\"radio\" value=\"hh\">Human vs Human</input>"
-               + "<input name=\"gamemode\"type=\"radio\" value=\"hc\"> Human vs Computer</input>"
-               + "<input name=\"submit\" type=\"submit\" method=\"post\"/></form>"
-               + "</body></html>";
+                + "<html><head></head><body><p>"
+                + message
+                + "</p><form action=\"localhost:5000\" ><input name=\"gamemode\" type=\"radio\" value=\"hh\">Human vs Human</input>"
+                + "<input name=\"gamemode\"type=\"radio\" value=\"hc\"> Human vs Computer</input>"
+                + "<input name=\"submit\" type=\"submit\" method=\"post\"/></form>"
+                + "<div class=\"alert\">"
+                + alert.removeAndReturnFirst()
+                + "</div>"
+                + "</body></html>";
     }
 }
