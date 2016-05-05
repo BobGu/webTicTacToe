@@ -1,5 +1,6 @@
 package controllers;
 import alertQueue.Alert;
+import decorators.htmlDecorator;
 import httpStatus.HttpStatus;
 import messageFactory.TicTacToeMessageFactory;
 import parsers.ParametersParser;
@@ -25,7 +26,7 @@ public class GameModeController implements Controller{
         responseHeader += "Content-Type: text/html" + EscapeCharacters.newline + EscapeCharacters.newline;
         TicTacToeMessageFactory ticTacToeMessageFactory = new TicTacToeMessageFactory();
         String gameMessage = ticTacToeMessageFactory.gameMode();
-        String responseBody = formatIntoHtml(gameMessage);
+        String responseBody = htmlDecorator.gameModeDecorate(gameMessage);
         String response = responseHeader + responseBody;
         return response.getBytes();
     }
@@ -45,28 +46,4 @@ public class GameModeController implements Controller{
         return response.getBytes();
     }
 
-    private String formatIntoHtml(String message) {
-        String alertMessage = showAlert();
-        String html = "<!DOCTYPE html>"
-                    + "<html><head></head><body><p>"
-                    + message
-                    + "</p><form action=\"http://localhost:5000/game-mode\" method=\"post\"><input name=\"gamemode\" type=\"radio\" value=\"hh\">Human vs Human</input>"
-                    + "<input name=\"gamemode\"type=\"radio\" value=\"hc\"> Human vs Computer</input>"
-                    + "<input type=\"submit\"/></form>"
-                    + alertMessage
-                    + "</body></html>";
-        return html;
-    }
-
-    private String showAlert() {
-        String messageAlert = alert.removeAndReturnFirst();
-        String html = "";
-        if (messageAlert != null) {
-            html += "<div class=\"alert\">"
-                    + messageAlert
-                    + "</div>";
-        }
-
-        return html;
-    }
 }
