@@ -12,4 +12,12 @@ public class TicTacToeValidator {
         boolean message = (boolean) gameMode.invoke(input);
         return message;
     }
+
+    public boolean validName(String input) {
+        IFn require = Clojure.var("clojure.core", "require");
+        require.invoke(Clojure.read("ttt-clojure.validate-input"));
+        IFn name = Clojure.var("ttt-clojure.validate-input", "valid-name?");
+        boolean message = (boolean) name.invoke(input);
+        return message;
+    }
 }

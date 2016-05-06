@@ -2,7 +2,6 @@ import httpStatus.HttpStatus;
 import org.junit.Test;
 import requests.Request;
 import controllers.PlayerNameController;
-import httpStatus.HttpStatus;
 
 import static org.junit.Assert.assertTrue;
 
@@ -24,5 +23,32 @@ public class PlayerNameControllerTest {
         String responseString = new String(response);
 
         assertTrue(responseString.contains("What is your name?"));
+    }
+
+    @Test
+    public void postRespondsWithThreeOhTwoRedirect () {
+        Request request = new Request("a request", "/first-player-name", "POST", "playerName=robert", null);
+        byte[] response = controller.handle(request);
+        String responseString = new String(response);
+
+        assertTrue(responseString.contains(HttpStatus.REDIRECT.getResponseCode()));
+    }
+
+    @Test
+    public void handlesPostWithInvalidName() {
+        Request request = new Request("a request", "/first-player-name", "POST", "playerName=", null);
+        byte[] response = controller.handle(request);
+        String responseString = new String(response);
+
+        assertTrue(responseString.contains("Location: http://localhost:5000/first-player-name"));
+    }
+
+    @Test
+    public void handlesPostWithValidName() {
+        Request request = new Request("a request", "/first-player-name", "POST", "playerName=bob", null);
+        byte[] response = controller.handle(request);
+        String responseString = new String(response);
+
+        assertTrue(responseString.contains("Location: http://localhost:5000/first-player-piece"));
     }
 }
