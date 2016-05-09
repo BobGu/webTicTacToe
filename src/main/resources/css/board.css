@@ -1,0 +1,10 @@
+.board {
+  margin: 0 auto;
+  width: 40%;
+}
+.square {
+  width: 30%;
+  padding: 15% 0;
+  border: 5px solid black;
+  display: inline-block;
+}
