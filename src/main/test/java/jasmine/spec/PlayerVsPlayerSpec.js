@@ -12,3 +12,17 @@ describe("markBoard", function() {
   });
 });
 
+describe("spaceEmpty", function() {
+  it("checks for an empty space", function() {
+    expect(true).toBe(spaceEmpty("2"));
+    expect(false).toBe(spaceEmpty(X_MARKER));
+    expect(false).toBe(spaceEmpty(O_MARKER));
+  });
+});
+
+describe("oppositeMarker", function() {
+  it("return the opposite marker", function() {
+    expect(X_MARKER).toEqual(oppositeMarker(O_MARKER));
+    expect(O_MARKER).toEqual(oppositeMarker(X_MARKER));
+  });
+});
