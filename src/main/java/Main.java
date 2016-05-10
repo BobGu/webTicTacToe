@@ -1,13 +1,10 @@
 import configuration.Configuration;
-import controllers.AssetController;
 import controllers.GameStatusController;
 import controllers.PlayerVsPlayerController;
 import gameStatus.TicTacToeGameStatus;
 import readers.ResourceReader;
 import routers.ResourceRouter;
-import routes.FileRouter;
 import routes.Router;
-import java.io.FileReader;
 import java.io.IOException;
 
 public class Main {

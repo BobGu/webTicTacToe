@@ -27,7 +27,7 @@ $(document).ready(function() {
 
 var currentMarker = "X";
 var currentBoard = emptyBoard();
-var gameStatusService = new gameStatusService();
+var gameStatusService = new GameStatusService();
 
   function switchCurrentMarker() {
     currentMarker = oppositeMarker(currentMarker);
@@ -37,18 +37,21 @@ var gameStatusService = new gameStatusService();
     $this.children().first().text(currentMarker);
   }
 
-  function gameWon(gameWon) {
-    return gameWon == "true";
+  function gameWon() {
+    return function(gameWon) {
+      return gameWon == "true";
+    }
   }
 
   $(".square").click(function() {
     var squareValue = $(this).children().first().text();
     if(spaceEmpty(squareValue)) {
-      var int = parseInt(squareValue, 10);
-      markBoard(int, currentMarker, currentBoard);
+      var spaceNumber = $(this).data("square");
+      var int = parseInt(spaceNumber, 10);
+      currentBoard = markBoard(int, currentMarker, currentBoard);
       updateSquareText($(this));
-      var gameWon = gameStatusService.gameWon({board:board}, gameWon);
-      if (gameWon) {
+      var gameStatus = gameStatusService.gameWon({board: currentBoard}, gameWon());
+      if (gameStatus) {
         alert(currentMarker + " has won the game");
       }
       switchCurrentMarker();
