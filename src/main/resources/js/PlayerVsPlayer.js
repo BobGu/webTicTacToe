@@ -23,11 +23,11 @@ function oppositeMarker(currentMarker) {
 }
 
 
-
 $(document).ready(function() {
 
 var currentMarker = "X";
 var currentBoard = emptyBoard();
+var gameStatusService = new gameStatusService();
 
   function switchCurrentMarker() {
     currentMarker = oppositeMarker(currentMarker);
@@ -37,12 +37,20 @@ var currentBoard = emptyBoard();
     $this.children().first().text(currentMarker);
   }
 
+  function gameWon(gameWon) {
+    return gameWon == "true";
+  }
+
   $(".square").click(function() {
     var squareValue = $(this).children().first().text();
     if(spaceEmpty(squareValue)) {
       var int = parseInt(squareValue, 10);
       markBoard(int, currentMarker, currentBoard);
       updateSquareText($(this));
+      var gameWon = gameStatusService.gameWon({board:board}, gameWon);
+      if (gameWon) {
+        alert(currentMarker + " has won the game");
+      }
       switchCurrentMarker();
     }
   });

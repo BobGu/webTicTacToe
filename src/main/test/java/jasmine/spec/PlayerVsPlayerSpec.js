@@ -52,11 +52,7 @@ describe("GameStatusService", function() {
     });
 
     it("returns the game won as being false", function() {
-      expect(onSuccess).toHaveBeenCalled();
-
-      var successArgs = onSuccess.calls.mostRecent().args[0];
-      var gameWon = successArgs.response.gameStatus.gameWon;
-
+      var gameWon = onSuccess.calls.mostRecent().args[0];
       expect("false").toEqual(gameWon);
     });
   });

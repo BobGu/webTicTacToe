@@ -7,7 +7,7 @@ GameStatusService.prototype.gameWon = function(board, {onSuccess: successMethod}
     data: board,
     dataType: "json"
   }).done(function(data) {
-    successMethod(data);
+    successMethod(data.response.gameStatus.gameWon);
   });
 }
 
