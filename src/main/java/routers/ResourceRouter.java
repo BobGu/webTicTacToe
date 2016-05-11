@@ -27,7 +27,6 @@ public class ResourceRouter extends FileRouter {
         String resourceLocation = request.getPath();
         InputStream input = getClass().getResourceAsStream(resourceLocation);
         boolean resourceExists = input != null;
-        System.out.println(request.getParameters());
 
         if (route.isPresent()) {
             response = route.get().getController().handle(request);

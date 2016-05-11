@@ -50,7 +50,8 @@ var gameStatusService = new GameStatusService();
       var int = parseInt(spaceNumber, 10);
       currentBoard = markBoard(int, currentMarker, currentBoard);
       updateSquareText($(this));
-      var gameStatus = gameStatusService.gameWon({board: currentBoard}, gameWon());
+      var board = {board: currentBoard};
+      var gameStatus = gameStatusService.gameWon(JSON.stringify(board), gameWon());
       if (gameStatus) {
         alert(currentMarker + " has won the game");
       }
