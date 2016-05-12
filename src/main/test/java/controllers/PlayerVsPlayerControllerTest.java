@@ -1,10 +1,9 @@
 import controllers.PlayerVsPlayerController;
 import httpStatus.HttpStatus;
 import org.junit.Test;
-import readers.FileReader;
 import readers.Reader;
 import requests.Request;
-import responseBuilders.ResponseHeaderBuilder;
+import responseBuilders.ResponseBuilder;
 import specialCharacters.EscapeCharacters;
 
 import java.io.IOException;
@@ -13,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 public class PlayerVsPlayerControllerTest {
     private MockFileReader reader = new MockFileReader();
-    private MockResponseHeaderBuilder headerBuilder = new MockResponseHeaderBuilder();
+    private MockResponseBuilder headerBuilder = new MockResponseBuilder();
     private PlayerVsPlayerController controller = new PlayerVsPlayerController(reader, headerBuilder);
     private Request getRequest = new Request("The Full Request", "/player-vs-player", "GET", null, null);
 
@@ -41,19 +40,23 @@ public class PlayerVsPlayerControllerTest {
     }
 
     private class MockFileReader implements Reader {
+
         public byte[] read(String location) {
             String fileContents = "These are the file contents";
             return fileContents.getBytes();
         }
+
     }
 
-    private class MockResponseHeaderBuilder implements ResponseHeaderBuilder  {
-        public String getResponseHeader() {
-            return HttpStatus.OKAY.getResponseCode()
-                   + EscapeCharacters.newline
-                   + "Content-Type: text/html"
-                   + EscapeCharacters.newline
-                   + EscapeCharacters.newline;
+    private class MockResponseBuilder implements ResponseBuilder {
+        public byte[] getResponse() {
+            String responseHeaders = HttpStatus.OKAY.getResponseCode()
+                                   + EscapeCharacters.newline
+                                   + "Content-Type: text/html"
+                                   + EscapeCharacters.newline
+                                   + EscapeCharacters.newline
+                                   + "These are the file contents";
+            return responseHeaders.getBytes();
         }
 
         public void addStatus(String status) {
@@ -61,6 +64,10 @@ public class PlayerVsPlayerControllerTest {
         }
 
         public void addContentType(String contentType) {
+
+        }
+
+        public void addBodyContents(Reader reader, String location) {
 
         }
 

@@ -3,18 +3,17 @@ package controllers;
 import httpStatus.HttpStatus;
 import readers.Reader;
 import requests.Request;
-import responseBuilders.ResponseHeaderBuilder;
-import specialCharacters.EscapeCharacters;
+import responseBuilders.ResponseBuilder;
 
 import java.io.IOException;
 
 public class PlayerVsPlayerController implements Controller {
     private Reader reader;
-    private ResponseHeaderBuilder headerBuilder;
+    private ResponseBuilder responseBuilder;
 
-    public PlayerVsPlayerController(Reader reader, ResponseHeaderBuilder headerBuilder) {
+    public PlayerVsPlayerController(Reader reader, ResponseBuilder responseBuilder ) {
         this.reader = reader;
-        this.headerBuilder = headerBuilder;
+        this.responseBuilder= responseBuilder;
     }
 
     public byte[] handle(Request request) throws IOException {
@@ -26,11 +25,9 @@ public class PlayerVsPlayerController implements Controller {
     }
 
     public byte[] getResponse() throws IOException {
-        headerBuilder.addStatus(HttpStatus.OKAY.getResponseCode());
-        headerBuilder.addContentType("text/html");
-        byte[] fileContents = reader.read("/board.html");
-        String responseBody = new String(fileContents);
-        String response = headerBuilder.getResponseHeader() + responseBody;
-        return response.getBytes();
+        responseBuilder.addStatus(HttpStatus.OKAY.getResponseCode());
+        responseBuilder.addContentType("text/html");
+        responseBuilder.addBodyContents(reader, "/board.html");
+        return responseBuilder.getResponse();
     }
 }
