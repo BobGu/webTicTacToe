@@ -41,6 +41,11 @@ public class ResourceRouter extends FileRouter {
         return response;
     }
 
+    @Override
+    public boolean isRoutes() {
+        return !routes.isEmpty();
+    }
+
     private Optional<Route> findRoute(String path) {
         return routes.stream()
                 .filter(route -> route.getPath().equals(path))
