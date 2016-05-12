@@ -22,6 +22,16 @@ function oppositeMarker(currentMarker) {
   }
 }
 
+function boardFull(board) {
+  var boardFull = true;
+  board.forEach(function(space, index, spaces) {
+    if(spaceEmpty(space)) {
+      boardFull = false;
+    }
+  });
+  return boardFull;
+}
+
 
 $(document).ready(function() {
   var currentMarker;
@@ -51,6 +61,10 @@ $(document).ready(function() {
     return function(gameWon) {
       if (gameWon == "true") {
         alert(oppositeMarker(currentMarker) + " has won the game");
+        originalGameSettings();
+        clearSpaces();
+      } else if (boardFull(currentBoard)) {
+        alert("The game is a tie");
         originalGameSettings();
         clearSpaces();
       }

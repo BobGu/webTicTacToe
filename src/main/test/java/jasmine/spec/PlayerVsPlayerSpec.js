@@ -62,3 +62,17 @@ describe("GameStatusService", function() {
   });
 });
 
+describe("boardFull", function() {
+  it("returns true if board is full", function() {
+    var board = ["X", "O", "X",
+                   "O", "X", "O",
+                   "O", "X", "O"];
+    expect(true).toEqual(boardFull(board));
+  });
+
+  it("returns false if board is not full", function() {
+    var board = ["0", "1", "X", "X", "X", "X", "X", "X", "X", "X"];
+    expect(false).toEqual(boardFull(board));
+  });
+});
+
