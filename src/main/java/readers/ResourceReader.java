@@ -7,7 +7,6 @@ public class ResourceReader implements Reader{
     public byte[] read(String location) throws IOException {
         InputStream input = getClass().getResourceAsStream(location);
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
         int nRead;
         byte[] data = new byte[16384];
 
