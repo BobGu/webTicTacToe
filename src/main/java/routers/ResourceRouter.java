@@ -5,6 +5,7 @@ import controllers.Controller;
 import httpStatus.HttpStatus;
 import readers.ResourceReader;
 import requests.Request;
+import responseBuilders.TicTacToeResponseBuilder;
 import routes.FileRouter;
 import routes.Route;
 import specialCharacters.EscapeCharacters;
@@ -32,13 +33,18 @@ public class ResourceRouter extends FileRouter {
         if (route.isPresent()) {
             response = route.get().getController().handle(request);
         } else if (resourceExists) {
-            Controller controller = new AssetController(new ResourceReader());
+            Controller controller = new AssetController(new ResourceReader(), new TicTacToeResponseBuilder());
             response = controller.handle(request);
         } else {
             String responseString = HttpStatus.NOT_FOUND.getResponseCode()+ EscapeCharacters.newline + EscapeCharacters.newline;
             response = responseString.getBytes();
         }
         return response;
+    }
+
+    @Override
+    public boolean isRoutes() {
+        return !routes.isEmpty();
     }
 
     private Optional<Route> findRoute(String path) {

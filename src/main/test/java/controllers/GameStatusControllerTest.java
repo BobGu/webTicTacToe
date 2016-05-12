@@ -1,7 +1,5 @@
-package controllers;
-
+import controllers.GameStatusController;
 import gameStatus.TicTacToeGameStatus;
-import httpStatus.HttpStatus;
 import org.junit.Test;
 import requests.Request;
 
