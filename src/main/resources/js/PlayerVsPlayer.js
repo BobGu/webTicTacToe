@@ -41,6 +41,7 @@ $(document).ready(function() {
   function originalGameSettings() {
     currentMarker = X_MARKER;
     currentBoard = emptyBoard();
+    clearSpaces();
   }
 
   function clearSpaces() {
@@ -62,11 +63,9 @@ $(document).ready(function() {
       if (gameWon == "true") {
         alert(oppositeMarker(currentMarker) + " has won the game");
         originalGameSettings();
-        clearSpaces();
       } else if (boardFull(currentBoard)) {
         alert("The game is a tie");
         originalGameSettings();
-        clearSpaces();
       }
     }
   }
