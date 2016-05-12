@@ -6,6 +6,7 @@ import requests.Request;
 import responseBuilders.ResponseBuilder;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class PlayerVsPlayerController implements Controller {
     private Reader reader;
@@ -25,9 +26,16 @@ public class PlayerVsPlayerController implements Controller {
     }
 
     public byte[] getResponse() throws IOException {
-        responseBuilder.addStatus(HttpStatus.OKAY.getResponseCode());
-        responseBuilder.addContentType("text/html");
-        responseBuilder.addBodyContents(reader, "/board.html");
+        InputStream input = getClass().getResourceAsStream("/board.html");
+        boolean resourceExists = input != null;
+
+        if (resourceExists) {
+            responseBuilder.addStatus(HttpStatus.OKAY.getResponseCode());
+            responseBuilder.addContentType("text/html");
+            responseBuilder.addBodyContents(reader, "/board.html");
+        } else {
+            responseBuilder.addStatus(HttpStatus.NOT_FOUND.getResponseCode());
+        }
         return responseBuilder.getResponse();
     }
 }

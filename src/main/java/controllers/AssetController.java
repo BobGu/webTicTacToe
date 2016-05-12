@@ -7,6 +7,7 @@ import responseBuilders.ResponseBuilder;
 import specialCharacters.EscapeCharacters;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class AssetController implements Controller{
     private Reader reader;
@@ -18,8 +19,15 @@ public class AssetController implements Controller{
     }
 
     public byte[] handle(Request request) throws IOException {
-        builder.addStatus(HttpStatus.OKAY.getResponseCode());
-        builder.addBodyContents(reader, request.getPath());
+        InputStream input = getClass().getResourceAsStream(request.getPath());
+        boolean resourceExists = input != null;
+
+        if (resourceExists) {
+            builder.addStatus(HttpStatus.OKAY.getResponseCode());
+            builder.addBodyContents(reader, request.getPath());
+        } else {
+            builder.addStatus(HttpStatus.NOT_FOUND.getResponseCode());
+        }
         return builder.getResponse();
     }
 }
