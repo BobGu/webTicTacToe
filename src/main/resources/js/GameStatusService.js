@@ -1,14 +1,13 @@
 var GameStatusService = function() {};
 
-GameStatusService.prototype.gameWon = function(board, {onSuccess: successMethod}) {
-  alert(board);
+GameStatusService.prototype.gameWon = function(board, callbackObject) {
   $.ajax({
     url: "/game-won",
     method: "POST",
     data: board,
     dataType: "json"
   }).done(function(data) {
-    successMethod(data.response.gameStatus.gameWon);
+    callbackObject.onSuccess(data.response.gameStatus.gameWon);
   });
 }
 

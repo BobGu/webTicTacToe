@@ -24,10 +24,20 @@ function oppositeMarker(currentMarker) {
 
 
 $(document).ready(function() {
+  var currentMarker;
+  var currentBoard;
+  var gameStatusService = new GameStatusService();
 
-var currentMarker = "X";
-var currentBoard = emptyBoard();
-var gameStatusService = new GameStatusService();
+  function originalGameSettings() {
+    currentMarker = X_MARKER;
+    currentBoard = emptyBoard();
+  }
+
+  function clearSpaces() {
+    $(".marker").text("");
+  }
+
+  originalGameSettings();
 
   function switchCurrentMarker() {
     currentMarker = oppositeMarker(currentMarker);
@@ -39,22 +49,35 @@ var gameStatusService = new GameStatusService();
 
   function gameWon() {
     return function(gameWon) {
-      return gameWon == "true";
+      if (gameWon == "true") {
+        alert(oppositeMarker(currentMarker) + " has won the game");
+        originalGameSettings();
+        clearSpaces();
+      }
     }
+  }
+
+  function getSquareNumber($this) {
+    return $this.data("square");
+  }
+
+  function move($this) {
+    updateSquareText($this);
+    var squareNumber = getSquareNumber($this);
+    var int = parseInt(squareNumber, 10);
+    currentBoard = markBoard(int, currentMarker, currentBoard);
+  }
+
+  function askGameWon() {
+    var board = {board: currentBoard};
+    gameStatusService.gameWon(JSON.stringify(board), {onSuccess: gameWon()});
   }
 
   $(".square").click(function() {
     var squareValue = $(this).children().first().text();
     if(spaceEmpty(squareValue)) {
-      var spaceNumber = $(this).data("square");
-      var int = parseInt(spaceNumber, 10);
-      currentBoard = markBoard(int, currentMarker, currentBoard);
-      updateSquareText($(this));
-      var board = {board: currentBoard};
-      var gameStatus = gameStatusService.gameWon(JSON.stringify(board), gameWon());
-      if (gameStatus) {
-        alert(currentMarker + " has won the game");
-      }
+      move($(this));
+      askGameWon();
       switchCurrentMarker();
     }
   });
