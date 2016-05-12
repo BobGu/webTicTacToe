@@ -10,11 +10,10 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Configuration config = new Configuration();
+        Router router = new ResourceRouter();
+        Configuration config = new Configuration(router);
         config.addRoute("/player-vs-player", new PlayerVsPlayerController(new ResourceReader()));
         config.addRoute("/game-won", new GameStatusController(new TicTacToeGameStatus()));
-        Router router = new ResourceRouter();
-        config.setRouter(router);
         config.setRoutes();
         config.startServer();
     }
