@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import requests.Request;
+import responseBuilders.ResponseBuilder;
 import specialCharacters.EscapeCharacters;
 
 import java.io.IOException;
@@ -15,9 +16,11 @@ import java.util.Iterator;
 
 public class GameStatusController implements Controller{
     private GameStatus gameStatus;
+    private ResponseBuilder builder;
 
-    public GameStatusController(GameStatus gameStatus) {
+    public GameStatusController(GameStatus gameStatus, ResponseBuilder builder) {
         this.gameStatus = gameStatus;
+        this.builder = builder;
     }
 
     public byte[] handle(Request request) throws IOException {
@@ -32,14 +35,18 @@ public class GameStatusController implements Controller{
     }
 
     public byte[] post(Request request) throws IOException, JSONException {
-        HashMap<String, ArrayList<Object>> convertedJson = toHashMap(request.getParameters());
-        ArrayList<Object> board = convertedJson.get("board");
-        ArrayList<Object> newBoard = stringSpacesToIntegerSpaces(board);
-        boolean isGameWon = gameStatus.gameWon(newBoard);
-        String headers = HttpStatus.OKAY.getResponseCode() + EscapeCharacters.newline + EscapeCharacters.newline;
+        ArrayList<Object> board = getBoardFromJson(request.getParameters());
+        boolean isGameWon = gameStatus.gameWon(board);
         String jsonResponse = createJsonResponse(isGameWon);
-        String response = headers + jsonResponse;
-        return response.getBytes();
+        builder.addStatus(HttpStatus.OKAY.getResponseCode());
+        builder.addBodyContents(jsonResponse.getBytes());
+        return builder.getResponse();
+    }
+
+    private ArrayList<Object> getBoardFromJson(String json) throws IOException {
+        HashMap<String, ArrayList<Object>> convertedJson = toHashMap(json);
+        ArrayList<Object> board = convertedJson.get("board");
+        return stringSpacesToIntegerSpaces(board);
     }
 
     private HashMap<String, ArrayList<Object>> toHashMap(String json) throws IOException, JSONException {

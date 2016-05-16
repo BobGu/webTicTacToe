@@ -24,7 +24,8 @@ public class AssetController implements Controller{
 
         if (resourceExists) {
             builder.addStatus(HttpStatus.OKAY.getResponseCode());
-            builder.addBodyContents(reader, request.getPath());
+            byte[] fileContents = reader.read(request.getPath());
+            builder.addBodyContents(fileContents);
         } else {
             builder.addStatus(HttpStatus.NOT_FOUND.getResponseCode());
         }

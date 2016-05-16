@@ -29,7 +29,8 @@ public class TicTacToeResponseBuilderTest {
 
     @Test
     public void addsResponseBody() throws IOException {
-        builder.addBodyContents(reader, "file.html");
+        byte[] fileContents = reader.read("file.html");
+        builder.addBodyContents(fileContents);
         byte[] response = builder.getResponse();
         String responseString = new String(response);
         assertTrue(responseString.contains("These are the file contents"));
