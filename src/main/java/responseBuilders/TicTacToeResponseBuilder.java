@@ -21,8 +21,8 @@ public class TicTacToeResponseBuilder implements ResponseBuilder {
         responseHeaders += "Content-Type: " + contentType + EscapeCharacters.newline;
     }
 
-    public void addBodyContents(Reader reader, String location) throws IOException {
-        responseBody = reader.read(location);
+    public void addBodyContents(byte[] contents) {
+        responseBody = contents;
     }
 
     private byte[] getResponseHeaders() {

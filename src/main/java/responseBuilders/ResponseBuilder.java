@@ -9,5 +9,5 @@ public interface ResponseBuilder {
     public byte[] getResponse();
     public void addStatus(String status1);
     public void addContentType(String contentType);
-    public void addBodyContents(Reader reader, String location) throws IOException;
+    public void addBodyContents(byte[] contents);
 }

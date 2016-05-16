@@ -32,7 +32,8 @@ public class PlayerVsPlayerController implements Controller {
         if (resourceExists) {
             responseBuilder.addStatus(HttpStatus.OKAY.getResponseCode());
             responseBuilder.addContentType("text/html");
-            responseBuilder.addBodyContents(reader, "/board.html");
+            byte[] fileContents = reader.read("/board.html");
+            responseBuilder.addBodyContents(fileContents);
         } else {
             responseBuilder.addStatus(HttpStatus.NOT_FOUND.getResponseCode());
         }

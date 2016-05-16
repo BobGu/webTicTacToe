@@ -14,7 +14,7 @@ public class Main {
         Router router = new ResourceRouter();
         Configuration config = new Configuration(router);
         config.addRoute("/player-vs-player", new PlayerVsPlayerController(new ResourceReader(), new TicTacToeResponseBuilder()));
-        config.addRoute("/game-won", new GameStatusController(new TicTacToeGameStatus()));
+        config.addRoute("/game-won", new GameStatusController(new TicTacToeGameStatus(), new TicTacToeResponseBuilder()));
         config.setRoutes();
         config.startServer();
     }

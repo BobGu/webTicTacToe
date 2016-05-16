@@ -67,7 +67,7 @@ public class PlayerVsPlayerControllerTest {
 
         }
 
-        public void addBodyContents(Reader reader, String location) {
+        public void addBodyContents(byte[] contents) {
 
         }
 
