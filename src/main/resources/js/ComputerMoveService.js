@@ -1,12 +1,12 @@
 var ComputerMoveService = function() {};
 
-ComputerMoveService.prototype.computerMove = function(board, callbackObject) {
+ComputerMoveService.prototype.computerMove = function(data, callbackObject) {
   $.ajax({
     url: "/computer-move",
     method: "POST",
-    data: board,
+    data: data,
     dataType: "json"
   }).done(function(data) {
-    callbackObject.onSuccess(data);
+    callbackObject.onSuccess(data.computerMove);
   });
 }

@@ -37,6 +37,8 @@ $(document).ready(function() {
   var currentMarker;
   var currentBoard;
   var gameStatusService = new GameStatusService();
+  var computerMoveService = new ComputerMoveService();
+  var isComputerPlayer = true;
 
   function originalGameSettings() {
     currentMarker = X_MARKER;
@@ -54,8 +56,8 @@ $(document).ready(function() {
     currentMarker = oppositeMarker(currentMarker);
   }
 
-  function updateSquareText($this) {
-    $this.children().first().text(currentMarker);
+  function updateSquareText($this, marker) {
+    $this.children().first().text(marker);
   }
 
   function gameWon() {
@@ -70,12 +72,23 @@ $(document).ready(function() {
     }
   }
 
+  function computerMove(currentMarker) {
+    return function(computersMove) {
+      $squareToUpdate = $(".square[data-square='" + computersMove + "']");
+      updateSquareText($squareToUpdate, currentMarker);
+      var int = parseInt(computersMove);
+      currentBoard = markBoard(int, currentMarker, currentBoard);
+      askGameWon();
+      switchCurrentMarker();
+    }
+  }
+
   function getSquareNumber($this) {
     return $this.data("square");
   }
 
   function move($this) {
-    updateSquareText($this);
+    updateSquareText($this, currentMarker);
     var squareNumber = getSquareNumber($this);
     var int = parseInt(squareNumber, 10);
     currentBoard = markBoard(int, currentMarker, currentBoard);
@@ -92,7 +105,13 @@ $(document).ready(function() {
       move($(this));
       askGameWon();
       switchCurrentMarker();
+
+        if(isComputerPlayer) {
+          var data = {board: currentBoard, marker: currentMarker};
+          computerMoveService.computerMove(JSON.stringify(data), {onSuccess: computerMove(currentMarker)});
+        }
     }
+
   });
 
 });

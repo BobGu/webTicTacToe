@@ -25,7 +25,7 @@ describe("ComputerMoveService", function() {
 
     it("the computers move is 2", function() {
       var response = onSuccess.calls.mostRecent().args[0];
-      expect("2").toEqual(response.computerMove);
+      expect("2").toEqual(response);
     });
   });
 
