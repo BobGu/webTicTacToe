@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class TicTacToeGameStatus implements GameStatus{
 
-    public boolean gameWon(ArrayList<Object> board) {
+    public boolean gameWon(Object board) {
         IFn require = Clojure.var("clojure.core", "require");
         require.invoke(Clojure.read("ttt-clojure.rules"));
         IFn into = Clojure.var("clojure.core", "into");

@@ -17,7 +17,7 @@ public class GameStatusControllerTest {
     public void twoHundredOkayForPost() throws IOException {
         String board = "{\"board\": [\"0\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\"]}";
         Request request = new Request("The full request", "/game-status", "POST", board, null);
-        GameStatusController controller = new GameStatusController(new TicTacToeGameStatus(), new TicTacToeResponseBuilder());
+        GameStatusController controller = new GameStatusController(new TicTacToeGameStatus(), new MockResponseBuilder());
         byte[] response = controller.handle(request);
         String responseString = new String(response);
         String expected = "{\"response\":{\"gameStatus\":{\"gameWon\":\"false\"}}}";
@@ -32,7 +32,7 @@ public class GameStatusControllerTest {
                     + "Content-Type: text/html"
                     + EscapeCharacters.newline
                     + EscapeCharacters.newline
-                    + "These are the file contents";
+                    + "{\"response\":{\"gameStatus\":{\"gameWon\":\"false\"}}}";
             return responseHeaders.getBytes();
         }
 

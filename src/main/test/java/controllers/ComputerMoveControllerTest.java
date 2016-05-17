@@ -1,4 +1,5 @@
 import controllers.ComputerMoveController;
+import converters.Converter;
 import gameservice.GameService;
 import httpStatus.HttpStatus;
 import org.junit.Test;
@@ -8,6 +9,7 @@ import specialCharacters.EscapeCharacters;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.Assert.assertTrue;
 
@@ -17,7 +19,8 @@ public class ComputerMoveControllerTest {
     private Request request = new Request("Full request", "/computer-move", "GET", board, null);
     private MockResponseBuilder builder = new MockResponseBuilder();
     private MockGameService service = new MockGameService();
-    private ComputerMoveController controller = new ComputerMoveController(builder, service);
+    private MockConverter converter = new MockConverter();
+    private ComputerMoveController controller = new ComputerMoveController(builder, service, converter);
 
     @Test
     public void twoHundredOkayInResponse() throws IOException {
@@ -62,6 +65,13 @@ public class ComputerMoveControllerTest {
 
         public Integer computerMove(Object board, Object marker) {
             return 2;
+        }
+    }
+
+    private class MockConverter implements Converter {
+
+        public HashMap<String, Object> toHashMap(String json) {
+            return new HashMap<String,Object>();
         }
     }
 
