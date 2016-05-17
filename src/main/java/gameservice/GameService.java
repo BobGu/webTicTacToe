@@ -4,6 +4,6 @@ import java.util.ArrayList;
 
 public interface GameService {
 
-    public Integer computerMove(ArrayList<Object> board, String marker);
+    public Integer computerMove(Object board, Object marker);
 
 }

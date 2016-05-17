@@ -1,8 +1,11 @@
 import controllers.GameStatusController;
 import gameStatus.TicTacToeGameStatus;
+import httpStatus.HttpStatus;
 import org.junit.Test;
 import requests.Request;
+import responseBuilders.ResponseBuilder;
 import responseBuilders.TicTacToeResponseBuilder;
+import specialCharacters.EscapeCharacters;
 
 import java.io.IOException;
 
@@ -20,6 +23,31 @@ public class GameStatusControllerTest {
         String expected = "{\"response\":{\"gameStatus\":{\"gameWon\":\"false\"}}}";
 
         assertTrue(responseString.contains(expected));
+    }
+
+    private class MockResponseBuilder implements ResponseBuilder {
+        public byte[] getResponse() {
+            String responseHeaders = HttpStatus.OKAY.getResponseCode()
+                    + EscapeCharacters.newline
+                    + "Content-Type: text/html"
+                    + EscapeCharacters.newline
+                    + EscapeCharacters.newline
+                    + "These are the file contents";
+            return responseHeaders.getBytes();
+        }
+
+        public void addStatus(String status) {
+
+        }
+
+        public void addContentType(String contentType) {
+
+        }
+
+        public void addBodyContents(byte[] contents) {
+
+        }
+
     }
 
 }
