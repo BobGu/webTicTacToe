@@ -21,7 +21,7 @@ public class ComputerMoveControllerTest {
     private MockGameService service = new MockGameService();
     private MockConverter converter = new MockConverter();
     private MockJsonBuilder jsonBuilder = new MockJsonBuilder();
-    private ComputerMoveController controller = new ComputerMoveController(builder, service, converter, jsonBuilder);
+    private ComputerMoveController controller = new ComputerMoveController(service, builder, converter, jsonBuilder);
 
     @Test
     public void twoHundredOkayInResponse() throws IOException {

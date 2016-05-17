@@ -9,15 +9,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import responseBuilders.json.JsonBuilder;
 
-public class ComputerMoveController {
-    private ResponseBuilder builder;
+public class ComputerMoveController implements Controller {
     private GameService service;
+    private ResponseBuilder builder;
     private Converter converter;
     private JsonBuilder jsonBuilder;
 
-    public ComputerMoveController(ResponseBuilder builder, GameService service, Converter converter, JsonBuilder jsonBuilder) {
-        this.builder = builder;
+    public ComputerMoveController(GameService service, ResponseBuilder builder, Converter converter, JsonBuilder jsonBuilder) {
         this.service = service;
+        this.builder = builder;
         this.converter = converter;
         this.jsonBuilder = jsonBuilder;
     }
