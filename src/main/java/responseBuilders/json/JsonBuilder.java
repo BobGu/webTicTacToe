@@ -3,5 +3,7 @@ package responseBuilders.json;
 import java.util.ArrayList;
 
 public interface JsonBuilder {
-    public Object computerMove(ArrayList<Object> board, String marker);
+    public Object computerMove(int move);
+    public Object gameWon(boolean isGameWon);
+
 }

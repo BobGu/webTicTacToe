@@ -7,18 +7,22 @@ import httpStatus.HttpStatus;
 import org.json.JSONException;
 import requests.Request;
 import responseBuilders.ResponseBuilder;
+import responseBuilders.json.JsonBuilder;
+
 import java.io.IOException;
 import java.util.HashMap;
 
 public class GameStatusController implements Controller{
     private GameStatus gameStatus;
     private ResponseBuilder builder;
-    private Converter converter = new JsonConverter();
+    private Converter converter;
+    private JsonBuilder jsonBuilder;
 
-    public GameStatusController(GameStatus gameStatus, ResponseBuilder builder, Converter converter) {
+    public GameStatusController(GameStatus gameStatus, ResponseBuilder builder, Converter converter, JsonBuilder jsonBuilder) {
         this.gameStatus = gameStatus;
         this.builder = builder;
         this.converter = converter;
+        this.jsonBuilder = jsonBuilder;
     }
 
     public byte[] handle(Request request) throws IOException {
@@ -35,15 +39,11 @@ public class GameStatusController implements Controller{
     public byte[] askIfGameIsWon(Request request) throws IOException, JSONException {
         HashMap<String, Object> board = converter.toHashMap(request.getParameters());
         boolean isGameWon = gameStatus.gameWon(board.get("board"));
-        String jsonResponse = createJsonResponse(isGameWon);
+        String jsonResponse = (String) jsonBuilder.gameWon(isGameWon);
         builder.addStatus(HttpStatus.OKAY.getResponseCode());
         builder.addBodyContents(jsonResponse.getBytes());
         return builder.getResponse();
     }
 
-    private String createJsonResponse(boolean isGameWon) {
-        return  "{\"response\":{\"gameStatus\":"  +
-                "{\"gameWon\":\"" + isGameWon + "\"}}}";
-    }
 
 }

@@ -5,10 +5,10 @@ import httpStatus.HttpStatus;
 import org.junit.Test;
 import requests.Request;
 import responseBuilders.ResponseBuilder;
+import responseBuilders.json.JsonBuilder;
+import responseBuilders.json.TicTacToeJsonBuilder;
 import specialCharacters.EscapeCharacters;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertTrue;
@@ -20,7 +20,8 @@ public class ComputerMoveControllerTest {
     private MockResponseBuilder builder = new MockResponseBuilder();
     private MockGameService service = new MockGameService();
     private MockConverter converter = new MockConverter();
-    private ComputerMoveController controller = new ComputerMoveController(builder, service, converter);
+    private MockJsonBuilder jsonBuilder = new MockJsonBuilder();
+    private ComputerMoveController controller = new ComputerMoveController(builder, service, converter, jsonBuilder);
 
     @Test
     public void twoHundredOkayInResponse() throws IOException {
@@ -36,6 +37,12 @@ public class ComputerMoveControllerTest {
         String responseString = new String(response);
 
         assertTrue(responseString.contains("{\"move\":\"2\"}"));
+    }
+
+    @Test
+    public void jsonBuilderGetsCalled() throws IOException {
+        controller.handle(request);
+        assertTrue(jsonBuilder.getIsComputerMoveCalled());
     }
 
     private class MockResponseBuilder implements ResponseBuilder {
@@ -73,6 +80,24 @@ public class ComputerMoveControllerTest {
         public HashMap<String, Object> toHashMap(String json) {
             return new HashMap<String,Object>();
         }
+    }
+
+    private class MockJsonBuilder implements JsonBuilder {
+        private boolean isComputerMoveCalled = false;
+
+        public boolean getIsComputerMoveCalled() {
+            return isComputerMoveCalled;
+        }
+
+        public String computerMove(int move) {
+            isComputerMoveCalled = true;
+            return "2";
+        }
+
+        public String gameWon(boolean isGameWon) {
+            return "Yes game is won";
+        }
+
     }
 
 }
