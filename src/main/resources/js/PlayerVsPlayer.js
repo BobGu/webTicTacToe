@@ -1,39 +1,3 @@
-var X_MARKER = "X"
-var O_MARKER = "O"
-
-function emptyBoard() {
-  return ["0", "1", "2", "3", "4", "5", "6", "7", "8"];
-}
-
-function markBoard(space, marker, board) {
-  board[space] = marker;
-  return board;
-}
-
-
-function spaceEmpty(squareValue) {
-  return squareValue != X_MARKER && squareValue != O_MARKER;
-}
-
-function oppositeMarker(currentMarker) {
-  if (currentMarker == X_MARKER) {
-    return O_MARKER;
-  } else {
-    return X_MARKER;
-  }
-}
-
-function boardFull(board) {
-  var boardFull = true;
-  board.forEach(function(space, index, spaces) {
-    if(spaceEmpty(space)) {
-      boardFull = false;
-    }
-  });
-  return boardFull;
-}
-
-
 $(document).ready(function() {
   var currentMarker;
   var currentBoard;
@@ -41,28 +5,41 @@ $(document).ready(function() {
   var computerMoveService = new ComputerMoveService();
   var isComputerPlayer = true;
 
-  function originalGameSettings() {
-    currentMarker = X_MARKER;
-    currentBoard = emptyBoard();
-    clearSpaces();
+  function game() {
+    var squareValue = $(this).children().first().text();
+    if(spaceEmpty(squareValue)) {
+      move($(this), currentMarker);
+      switchCurrentMarker();
+
+        if(isComputerPlayer && !boardFull(currentBoard)) {
+          var data = {board: currentBoard, marker: currentMarker};
+          preventUserFromClick();
+          computerMoveService.computerMove(JSON.stringify(data), {onSuccess: computerMove(currentMarker)});
+        }
+    }
   }
 
-  function updateCurrentBoard(board) {
-    currentBoard = board;
+  function move($this, marker) {
+    updateSquareText($this, marker);
+    var squareNumber = getSquareNumber($this);
+    updateBoardAndCheckIfGameIsWon(squareNumber, marker);
   }
 
-  function clearSpaces() {
-    $(".marker").text("");
+  function computerMove(marker) {
+    return function(computersMove) {
+      $squareToUpdate = $(".square[data-square='" + computersMove + "']");
+      updateSquareText($squareToUpdate, marker);
+      updateBoardAndCheckIfGameIsWon(computersMove, marker);
+      switchCurrentMarker();
+      allowUserToClick();
+    }
   }
 
-  originalGameSettings();
-
-  function switchCurrentMarker() {
-    currentMarker = oppositeMarker(currentMarker);
-  }
-
-  function updateSquareText($this, marker) {
-    $this.children().first().text(marker);
+  function updateBoardAndCheckIfGameIsWon(move, marker) {
+    var int = parseInt(move);
+    board = markBoard(int, marker, currentBoard);
+    updateCurrentBoard(board);
+    askGameWon();
   }
 
   function gameWon() {
@@ -77,36 +54,39 @@ $(document).ready(function() {
     }
   }
 
-  function computerMove(marker) {
-    return function(computersMove) {
-      $squareToUpdate = $(".square[data-square='" + computersMove + "']");
-      updateSquareText($squareToUpdate, marker);
-      var int = parseInt(computersMove);
-      board = markBoard(int, currentMarker, currentBoard);
-      updateCurrentBoard(board);
-      askGameWon();
-      switchCurrentMarker();
-      allowUserToClick();
-    }
-  }
-
-  function getSquareNumber($this) {
-    return $this.data("square");
-  }
-
-  function move($this, marker) {
-    updateSquareText($this, marker);
-    var squareNumber = getSquareNumber($this);
-    var int = parseInt(squareNumber, 10);
-    board = markBoard(int, marker, currentBoard);
-    updateCurrentBoard(board);
-  }
-
   function askGameWon() {
     var board = {board: currentBoard};
     gameStatusService.gameWon(JSON.stringify(board), {onSuccess: gameWon()});
   }
 
+  function oppositeMarker(currentMarker) {
+    if (currentMarker == X_MARKER) {
+      return O_MARKER;
+    } else {
+      return X_MARKER;
+    }
+  }
+
+  function originalGameSettings() {
+    currentMarker = X_MARKER;
+    currentBoard = emptyBoard();
+    clearSpaces();
+  }
+
+  originalGameSettings();
+  $(".square").bind("click", game);
+
+  function updateCurrentBoard(board) {
+    currentBoard = board;
+  }
+
+  function switchCurrentMarker() {
+    currentMarker = oppositeMarker(currentMarker);
+  }
+
+  function updateSquareText($this, marker) {
+    $this.children().first().text(marker);
+  }
   function preventUserFromClick() {
     $(".square").unbind("click");
   }
@@ -115,22 +95,14 @@ $(document).ready(function() {
     $(".square").bind("click", game);
   }
 
-  function game() {
-    var squareValue = $(this).children().first().text();
-    if(spaceEmpty(squareValue)) {
-      move($(this), currentMarker);
-      askGameWon();
-      switchCurrentMarker();
-
-        if(isComputerPlayer && !boardFull(currentBoard)) {
-          var data = {board: currentBoard, marker: currentMarker};
-          preventUserFromClick();
-          computerMoveService.computerMove(JSON.stringify(data), {onSuccess: computerMove(currentMarker)});
-        }
-    }
+  function clearSpaces() {
+    $(".marker").text("");
   }
 
-  $(".square").bind("click", game);
+  function getSquareNumber($this) {
+    return $this.data("square");
+  }
+
 
 });
 
