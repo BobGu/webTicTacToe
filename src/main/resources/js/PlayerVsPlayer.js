@@ -10,6 +10,7 @@ function markBoard(space, marker, board) {
   return board;
 }
 
+
 function spaceEmpty(squareValue) {
   return squareValue != X_MARKER && squareValue != O_MARKER;
 }
@@ -46,6 +47,10 @@ $(document).ready(function() {
     clearSpaces();
   }
 
+  function updateCurrentBoard(board) {
+    currentBoard = board;
+  }
+
   function clearSpaces() {
     $(".marker").text("");
   }
@@ -72,14 +77,16 @@ $(document).ready(function() {
     }
   }
 
-  function computerMove(currentMarker) {
+  function computerMove(marker) {
     return function(computersMove) {
       $squareToUpdate = $(".square[data-square='" + computersMove + "']");
-      updateSquareText($squareToUpdate, currentMarker);
+      updateSquareText($squareToUpdate, marker);
       var int = parseInt(computersMove);
-      currentBoard = markBoard(int, currentMarker, currentBoard);
+      board = markBoard(int, currentMarker, currentBoard);
+      updateCurrentBoard(board);
       askGameWon();
       switchCurrentMarker();
+      $(".square").bind("click", game);
     }
   }
 
@@ -87,11 +94,12 @@ $(document).ready(function() {
     return $this.data("square");
   }
 
-  function move($this) {
-    updateSquareText($this, currentMarker);
+  function move($this, marker) {
+    updateSquareText($this, marker);
     var squareNumber = getSquareNumber($this);
     var int = parseInt(squareNumber, 10);
-    currentBoard = markBoard(int, currentMarker, currentBoard);
+    board = markBoard(int, marker, currentBoard);
+    updateCurrentBoard(board);
   }
 
   function askGameWon() {
@@ -99,20 +107,22 @@ $(document).ready(function() {
     gameStatusService.gameWon(JSON.stringify(board), {onSuccess: gameWon()});
   }
 
-  $(".square").click(function() {
+  function game() {
     var squareValue = $(this).children().first().text();
     if(spaceEmpty(squareValue)) {
-      move($(this));
+      move($(this), currentMarker);
       askGameWon();
       switchCurrentMarker();
 
         if(isComputerPlayer) {
+          $(".square").unbind("click");
           var data = {board: currentBoard, marker: currentMarker};
           computerMoveService.computerMove(JSON.stringify(data), {onSuccess: computerMove(currentMarker)});
         }
     }
+  }
 
-  });
+  $(".square").bind("click", game);
 
 });
 
