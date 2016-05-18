@@ -86,7 +86,7 @@ $(document).ready(function() {
       updateCurrentBoard(board);
       askGameWon();
       switchCurrentMarker();
-      $(".square").bind("click", game);
+      allowUserToClick();
     }
   }
 
@@ -107,6 +107,14 @@ $(document).ready(function() {
     gameStatusService.gameWon(JSON.stringify(board), {onSuccess: gameWon()});
   }
 
+  function preventUserFromClick() {
+    $(".square").unbind("click");
+  }
+
+  function allowUserToClick() {
+    $(".square").bind("click", game);
+  }
+
   function game() {
     var squareValue = $(this).children().first().text();
     if(spaceEmpty(squareValue)) {
@@ -114,9 +122,9 @@ $(document).ready(function() {
       askGameWon();
       switchCurrentMarker();
 
-        if(isComputerPlayer) {
-          $(".square").unbind("click");
+        if(isComputerPlayer && !boardFull(currentBoard)) {
           var data = {board: currentBoard, marker: currentMarker};
+          preventUserFromClick();
           computerMoveService.computerMove(JSON.stringify(data), {onSuccess: computerMove(currentMarker)});
         }
     }

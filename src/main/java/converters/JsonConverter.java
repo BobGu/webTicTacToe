@@ -3,9 +3,6 @@ package converters;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import parameters.Parameters;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
