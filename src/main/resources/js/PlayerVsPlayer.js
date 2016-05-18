@@ -3,7 +3,6 @@ $(document).ready(function() {
   var currentBoard;
   var gameStatusService = new GameStatusService();
   var computerMoveService = new ComputerMoveService();
-  var isComputerPlayer = true;
 
   function game() {
     var squareValue = $(this).children().first().text();
