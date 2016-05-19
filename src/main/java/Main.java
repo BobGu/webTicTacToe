@@ -1,4 +1,5 @@
 import configuration.Configuration;
+import controllers.AssetController;
 import controllers.ComputerMoveController;
 import controllers.GameStatusController;
 import controllers.PlayerVsPlayerController;
@@ -15,7 +16,7 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Router router = new ResourceRouter();
+        Router router = new ResourceRouter(new AssetController(new ResourceReader(), new TicTacToeResponseBuilder()));
         Configuration config = new Configuration(router);
         config.addRoute("/", new PlayerVsPlayerController(new ResourceReader(), new TicTacToeResponseBuilder()));
         config.addRoute("/game-won", new GameStatusController(new TicTacToeGameStatus(), new TicTacToeResponseBuilder(), new JsonConverter(), new TicTacToeJsonBuilder()));
