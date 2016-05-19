@@ -1,56 +1,69 @@
 package routers;
 
-import controllers.AssetController;
 import controllers.Controller;
 import httpStatus.HttpStatus;
-import readers.ResourceReader;
 import requests.Request;
+import responseBuilders.ResponseBuilder;
 import responseBuilders.TicTacToeResponseBuilder;
-import routes.FileRouter;
 import routes.Route;
-import specialCharacters.EscapeCharacters;
+import routes.Router;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Optional;
+import java.util.function.Predicate;
 
-public class ResourceRouter extends FileRouter {
+public class ResourceRouter implements Router {
     private ArrayList<Route> routes;
+    private ResponseBuilder responseBuilder = new TicTacToeResponseBuilder();
+    private Controller assetController;
 
-   public void setRoutes(ArrayList<Route> routes) {
-       this.routes = routes;
-   }
+    public ResourceRouter(Controller controller) {
+        this.assetController = controller;
+    }
 
-    @Override
+    public void setRoutes(ArrayList<Route> routes) {
+        this.routes = routes;
+    }
+
+    public boolean pathExists(String path) {
+        return routes.stream().anyMatch(pathExist(path));
+    }
+
     public byte[] direct(Request request) throws IOException {
-        byte[] response;
-        Optional<Route> route = findRoute(request.getPath());
-        String resourceLocation = request.getPath();
-        InputStream input = getClass().getResourceAsStream(resourceLocation);
-        boolean resourceExists = input != null;
+        String path = request.getPath();
 
-
-        if (route.isPresent()) {
-            response = route.get().getController().handle(request);
-        } else if (resourceExists) {
-            Controller controller = new AssetController(new ResourceReader(), new TicTacToeResponseBuilder());
-            response = controller.handle(request);
+        if (pathExists(path)) {
+            Route route = getRoute(path);
+            return route.getController().handle(request);
+        } else if(isResourcePath(path)) {
+            return assetController.handle(request);
         } else {
-            String responseString = HttpStatus.NOT_FOUND.getResponseCode()+ EscapeCharacters.newline + EscapeCharacters.newline;
-            response = responseString.getBytes();
+            responseBuilder.addStatus(HttpStatus.NOT_FOUND.getResponseCode());
+            return responseBuilder.getResponse();
         }
-        return response;
     }
 
-    @Override
     public boolean isRoutes() {
-        return !routes.isEmpty();
+        return !(routes == null);
     }
 
-    private Optional<Route> findRoute(String path) {
+    private boolean isResourcePath(String path) {
+        return path.contains(".html") || path.contains(".css") || path.contains(".js");
+    }
+
+    private Predicate<Route> pathExist(String path) {
+        return route -> route.getPath().equals(path);
+    }
+
+    private Route getRoute(String path) {
         return routes.stream()
                 .filter(route -> route.getPath().equals(path))
-                .findFirst();
+                .findFirst()
+                .get();
     }
+
+    public void setDirectoryLocation(String location) {
+
+    }
+
 
 }

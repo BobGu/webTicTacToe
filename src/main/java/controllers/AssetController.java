@@ -9,7 +9,7 @@ import specialCharacters.EscapeCharacters;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class AssetController implements Controller{
+public class AssetController implements Controller {
     private Reader reader;
     private ResponseBuilder builder;
 
