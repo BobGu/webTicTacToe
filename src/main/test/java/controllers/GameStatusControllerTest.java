@@ -18,8 +18,8 @@ import static org.junit.Assert.assertTrue;
 public class GameStatusControllerTest {
     private String board  = "{\"board\": [\"0\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\"]}";
     private Request request = new Request("The full request", "/game-status", "POST", board, null);
-    private GameStatus gameStatus = new MockGameStatus();
-    private ResponseBuilder responseBuilder = new MockResponseBuilder();
+    private MockGameStatus gameStatus = new MockGameStatus();
+    private MockResponseBuilder responseBuilder = new MockResponseBuilder();
     private Converter converter = new MockConverter();
     private JsonBuilder jsonBuilder = new MockJsonBuilder();
     private GameStatusController controller = new GameStatusController(gameStatus, responseBuilder, converter, jsonBuilder);
@@ -33,7 +33,23 @@ public class GameStatusControllerTest {
         assertTrue(responseString.contains(expected));
     }
 
+    @Test
+    public void gameStatusServiceIsUsed() throws IOException {
+        controller.handle(request);
+        assertTrue(gameStatus.getIsGameWonInvoked());
+    }
+
+    @Test
+    public void addCorrectResponseStatusToBuilder() throws IOException {
+        Request request = new Request("a request", "/player-vs-player", "PUT", null, null);
+        controller.handle(request);
+
+        assertTrue(responseBuilder.getResponseStatus().contains(HttpStatus.METHOD_NOT_ALLOWED.getResponseCode()));
+    }
+
     private class MockResponseBuilder implements ResponseBuilder {
+        private String responseStatus;
+
         public byte[] getResponse() {
             String responseHeaders = HttpStatus.OKAY.getResponseCode()
                     + EscapeCharacters.newline
@@ -44,8 +60,12 @@ public class GameStatusControllerTest {
             return responseHeaders.getBytes();
         }
 
-        public void addStatus(String status) {
+        public String getResponseStatus() {
+            return responseStatus;
+        }
 
+        public void addStatus(String status) {
+            responseStatus = status;
         }
 
         public void addContentType(String contentType) {
@@ -78,8 +98,15 @@ public class GameStatusControllerTest {
     }
 
     private class MockGameStatus implements GameStatus {
+        private boolean isGameWonInvoked = false;
+
         public boolean gameWon(Object board) {
+            isGameWonInvoked = true;
             return true;
+        }
+
+        public boolean getIsGameWonInvoked() {
+            return isGameWonInvoked;
         }
     }
 

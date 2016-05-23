@@ -23,7 +23,11 @@ public class ComputerMoveController implements Controller {
     }
 
     public byte[] handle(Request request) throws IOException {
-        return getComputerMove(request.getParameters());
+        if(request.getHttpVerb().equals("POST")) {
+           return getComputerMove(request.getParameters());
+        } else {
+            return methodNotAllowed();
+        }
     }
 
     private byte[] getComputerMove(String body) throws IOException {
@@ -32,6 +36,11 @@ public class ComputerMoveController implements Controller {
         String json = (String) jsonBuilder.computerMove(move);
         builder.addStatus(HttpStatus.OKAY.getResponseCode());
         builder.addBodyContents(json.getBytes());
+        return builder.getResponse();
+    }
+
+    private byte[] methodNotAllowed() {
+        builder.addStatus(HttpStatus.METHOD_NOT_ALLOWED.getResponseCode());
         return builder.getResponse();
     }
 

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 public class ComputerMoveControllerTest {
     private String board = "{\"board\": [\"0\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\"],"
             + "\"marker\": \"X\"}";
-    private Request request = new Request("Full request", "/computer-move", "GET", board, null);
+    private Request request = new Request("Full request", "/computer-move", "POST", board, null);
     private MockResponseBuilder builder = new MockResponseBuilder();
     private MockGameService service = new MockGameService();
     private MockConverter converter = new MockConverter();
@@ -45,7 +45,17 @@ public class ComputerMoveControllerTest {
         assertTrue(jsonBuilder.getIsComputerMoveCalled());
     }
 
+    @Test
+    public void addCorrectResponseStatusToBuilder() throws IOException {
+        Request request = new Request("a request", "/computer-move", "PATCH", null, null);
+        controller.handle(request);
+
+        assertTrue(builder.getResponseStatus().contains(HttpStatus.METHOD_NOT_ALLOWED.getResponseCode()));
+    }
+
     private class MockResponseBuilder implements ResponseBuilder {
+        private String responseStatus;
+
         public byte[] getResponse() {
             String responseHeaders = HttpStatus.OKAY.getResponseCode()
                     + EscapeCharacters.newline
@@ -54,8 +64,12 @@ public class ComputerMoveControllerTest {
             return responseHeaders.getBytes();
         }
 
-        public void addStatus(String status) {
+        public String getResponseStatus() {
+            return responseStatus;
+        }
 
+        public void addStatus(String status) {
+            responseStatus = status;
         }
 
         public void addContentType(String contentType) {

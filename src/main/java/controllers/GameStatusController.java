@@ -33,7 +33,9 @@ public class GameStatusController implements Controller{
                 e.printStackTrace();
             }
         }
-        return new byte[4];
+
+        return methodNotAllowed();
+
     }
 
     public byte[] askIfGameIsWon(Request request) throws IOException, JSONException {
@@ -42,6 +44,11 @@ public class GameStatusController implements Controller{
         String jsonResponse = (String) jsonBuilder.gameWon(isGameWon);
         builder.addStatus(HttpStatus.OKAY.getResponseCode());
         builder.addBodyContents(jsonResponse.getBytes());
+        return builder.getResponse();
+    }
+
+    private byte[] methodNotAllowed() {
+        builder.addStatus(HttpStatus.METHOD_NOT_ALLOWED.getResponseCode());
         return builder.getResponse();
     }
 

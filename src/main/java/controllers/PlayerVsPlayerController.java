@@ -21,7 +21,7 @@ public class PlayerVsPlayerController implements Controller {
         if (request.getHttpVerb().equals("GET")) {
             return getResponse();
         } else {
-            return new byte[4];
+            return methodNotAllowed();
         }
     }
 
@@ -37,6 +37,11 @@ public class PlayerVsPlayerController implements Controller {
         } else {
             responseBuilder.addStatus(HttpStatus.NOT_FOUND.getResponseCode());
         }
+        return responseBuilder.getResponse();
+    }
+
+    private byte[] methodNotAllowed() {
+        responseBuilder.addStatus(HttpStatus.METHOD_NOT_ALLOWED.getResponseCode());
         return responseBuilder.getResponse();
     }
 }

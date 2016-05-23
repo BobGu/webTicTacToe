@@ -39,6 +39,14 @@ public class PlayerVsPlayerControllerTest {
         assertTrue(response.contains("These are the file contents"));
     }
 
+    @Test
+    public void addCorrectResponseStatusToBuilder() throws IOException {
+        Request request = new Request("a request", "/player-vs-player", "POST", null, null);
+        controller.handle(request);
+
+        assertTrue(headerBuilder.getResponseStatus().contains(HttpStatus.METHOD_NOT_ALLOWED.getResponseCode()));
+    }
+
     private class MockFileReader implements Reader {
 
         public byte[] read(String location) {
@@ -51,6 +59,7 @@ public class PlayerVsPlayerControllerTest {
     }
 
     private class MockResponseBuilder implements ResponseBuilder {
+        private String responseStatus;
         public byte[] getResponse() {
             String responseHeaders = HttpStatus.OKAY.getResponseCode()
                                    + EscapeCharacters.newline
@@ -62,7 +71,7 @@ public class PlayerVsPlayerControllerTest {
         }
 
         public void addStatus(String status) {
-
+            responseStatus = status;
         }
 
         public void addContentType(String contentType) {
@@ -71,6 +80,10 @@ public class PlayerVsPlayerControllerTest {
 
         public void addBodyContents(byte[] contents) {
 
+        }
+
+        public String getResponseStatus() {
+            return responseStatus;
         }
 
     }
