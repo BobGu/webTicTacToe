@@ -8,7 +8,7 @@ public class TicTacToeJsonBuilderTest {
     @Test
     public void computerMoveJson() {
         TicTacToeJsonBuilder jsonBuilder = new TicTacToeJsonBuilder();
-        assertEquals("{\"computerMove:\"\"2\"}", jsonBuilder.computerMove(2));
+        assertEquals("{\"computerMove\":\"2\"}", jsonBuilder.computerMove(2));
     }
 
 }
