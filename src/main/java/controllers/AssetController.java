@@ -19,8 +19,7 @@ public class AssetController implements Controller {
     }
 
     public byte[] handle(Request request) throws IOException {
-        InputStream input = getClass().getResourceAsStream(request.getPath());
-        boolean resourceExists = input != null;
+        boolean resourceExists = reader.canRead(request.getPath());
 
         if (resourceExists) {
             builder.addStatus(HttpStatus.OKAY.getResponseCode());

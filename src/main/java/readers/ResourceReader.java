@@ -17,4 +17,10 @@ public class ResourceReader implements Reader{
 
         return buffer.toByteArray();
     }
+
+    public boolean canRead(String location) {
+        InputStream input = getClass().getResourceAsStream(location);
+        return input != null;
+    }
+
 }

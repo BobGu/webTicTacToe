@@ -43,5 +43,6 @@ public class TicTacToeResponseBuilderTest {
             return fileContents.getBytes();
         }
 
+        public boolean canRead(String location) {return true;}
     }
 }

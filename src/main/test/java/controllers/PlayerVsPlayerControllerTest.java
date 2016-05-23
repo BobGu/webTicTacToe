@@ -46,6 +46,8 @@ public class PlayerVsPlayerControllerTest {
             return fileContents.getBytes();
         }
 
+        public boolean canRead(String location) {return true;}
+
     }
 
     private class MockResponseBuilder implements ResponseBuilder {
